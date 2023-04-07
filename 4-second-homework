@@ -1,0 +1,442 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>4-second-chart</title>
+<!-- chart CSS -->
+    <style type="text/css">
+        .highcharts-figure,
+        .highcharts-data-table table {
+            min-width: 600px;
+            max-width: 800px;
+            margin: 1em auto;
+            position:absolute;
+            top: 90%;
+            left: 70%;
+            transform: translate(-50%, -50%);
+
+        }
+
+        .highcharts-data-table table {
+            font-family: Verdana, sans-serif;
+            border-collapse: collapse;
+            border: 1px solid #ebebeb;
+            margin: 10px auto;
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .highcharts-data-table caption {
+            padding: 1em 0;
+            font-size: 1.2em;
+            color: #555;
+        }
+
+        .highcharts-data-table th {
+            font-weight: 600;
+            padding: 0.5em;
+        }
+
+        .highcharts-data-table td,
+        .highcharts-data-table th,
+        .highcharts-data-table caption {
+            padding: 0.5em;
+        }
+
+        .highcharts-data-table thead tr,
+        .highcharts-data-table tr:nth-child(even) {
+            background: #f8f8f8;
+        }
+
+        .highcharts-data-table tr:hover {
+            background: #f1f7ff;
+        }
+
+/* separate this is used for the button CSS  */
+        * {
+            padding:0;
+            margin:0;
+        }
+
+        .body {
+            background-color: rgb(249, 246, 246);
+            padding: 0;
+            margin: 0;
+
+        }
+        .container {
+            position: absolute;
+            left: 50%;
+            top:40%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+        }
+
+        .button {
+        border-radius: 4px;
+        background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 0%, rgba(0,212,255,1) 100%);
+        width:200px;
+        height: 100px;
+        padding: 20px;
+        border-radius: 10px;
+        border: none;
+        padding: 20px;
+        width: 200px;
+        transition: all 0.5s;
+        cursor: pointer;
+        margin: 5px;
+        content:"Start";
+        position: absolute;
+        left: 50%;
+        top:50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: white;
+        filter: drop-shadow(0 0 0.75rem #1ea2f4);
+
+        }
+        .button span {
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        transition: 0.5s;
+        color: #fffafa;
+        text-align: center;
+        font-size: 40px;
+        }
+
+        .button span:after {
+        content: '\00bb';
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: -20px;
+        transition: 0.5s;
+        }
+
+        /* animation the text */
+        .button:hover span {
+        padding-right: 25px;
+        }
+
+        .button:hover span:after {
+        opacity: 1;
+        right: 0;
+        }
+
+        /* second container(container-fluid) */
+        .container-fluid {
+            position: absolute;
+            left: 60%;
+            top:70%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: rgb(6, 0, 0);
+            display: none;
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <!-- Large button saying Start -->
+    <div class="container">
+        <div class="Startbutton" style="position: relative;">
+            <button id="buttoncolor"class="button" style="vertical-align:middle" onclick="button()"><span>Start </span></button>
+        </div>
+    </div>  
+    
+    <!-- create another container to store the result, inclued, how many second over 4 second and less, and actual time  -->
+    <div class="container-fluid" id="result">
+        <div class="result" style="position: absolute;">
+            <table class="table table-striped" id="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Times you try</th>
+                        <th scope="col">time in seconds</th>
+                        <th scope="col">Over 4 second</th>
+                        <th scope="col">less 4 second</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row" id="try">0</th>
+                        <td id="time">0</td>
+                        <td id="over">0</td>
+                        <td id="less">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- Boostrap links and JC, CSS --> 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- chart external lines -->
+<script src="../../code/highcharts.js"></script>
+<script src="../../code/modules/series-label.js"></script>
+<script src="../../code/modules/exporting.js"></script>
+<script src="../../code/modules/export-data.js"></script>
+<script src="../../code/modules/accessibility.js"></script>
+
+<figure class="highcharts-figure">
+    <div id="container"></div>
+</figure>
+<!-- chart part -->
+<script type="text/javascript">
+    // Highcharts.chart('container', {
+
+    //     title: {
+    //         text: '4-second-chart',
+    //         align: 'center'
+    //     },
+    //     yAxis: {
+    //         title: {
+    //             text: 'elapsed_time'
+    //         }
+            
+    //     },
+
+    //     xAxis: {
+    //         title: {
+    //             text: 'time you try to click the button'
+    //         },
+    //         accessibility: {
+    //             rangeDescription: 'Range: 0 to 5'
+    //         }
+    //     },
+
+    //     legend: {
+    //         layout: 'vertical',
+    //         align: 'right',
+    //         verticalAlign: 'middle'
+    //     },
+
+    //     plotOptions: {
+    //         series: {//this is the line
+    //             label: {
+    //                 connectorAllowed: false
+    //             },
+    //             pointStart: 0
+    //         }
+    //     },
+
+    //     series: [{
+    //         name: 'elapsed_time_line',
+    //         //put the elapsed_time_array to the line//
+    //         data: elapsed_time_array
+
+            
+
+    //     }],
+
+    //     responsive: {
+    //         rules: [{
+    //             condition: {
+    //                 maxWidth: 500
+    //             },
+    //             chartOptions: {
+    //                 legend: {
+    //                     layout: 'horizontal',
+    //                     align: 'center',
+    //                     verticalAlign: 'bottom'
+    //                 }
+    //             }
+    //         }]
+    //     }
+
+    // });
+
+
+    // button functions//
+    var delta;
+    var start_time,end_time,elapsed_time;
+    var isrunning = false;
+    //gloable the stand time//
+    var stand_time=4;
+    //hold the result table data//
+    var time_try = 0;
+    var time = 0;
+    var time_over4seconds = 0;
+    var time_less4seconds = 0;
+    //store the time_try and elapsed_time to the array//
+    var time_try_array = [];
+    var elapsed_time_array = [];
+    
+
+// User clicks button and the button text says Stop//
+    function button() {
+        var x = document.getElementsByClassName("button")[0];
+        if (x.innerHTML === "start") {
+            x.innerHTML = "start";
+            x.style.fontSize = "40px";
+        }
+        if (x.innerHTML === "stop") {
+            x.innerHTML = "start";
+            x.style.fontSize = "40px";
+        }
+        else {
+            x.innerHTML = "stop";
+            x.style.fontSize = "40px";
+        }
+        //call the function to start the timer//
+        startTimer();
+        //when click start button, add rows//
+        if (x.innerHTML === "start") {
+            addRow();
+            addData()
+            console.log(elapsed_time_array);
+        }
+    }
+
+
+// When user click the button, the timer will start, then click button again the timer will stop, to get the time when you stop the timer//
+    function startTimer() {
+        if (isrunning) {
+            isrunning = false;
+            end_time = new Date();
+            elapsed_time = end_time - start_time;
+            elapsed_time = elapsed_time / 1000;            
+            time_try++;            
+            if (elapsed_time > stand_time) {
+                time_over4seconds=elapsed_time-stand_time;
+                //if the time_over4seconds is appear, the time_less4seconds will change to 0//
+                time_less4seconds=0;
+            }
+            if (elapsed_time == stand_time) {
+                time_over4seconds=0;
+                time_less4seconds=0;
+            }
+            if (elapsed_time < stand_time) {
+                time_less4seconds=stand_time-elapsed_time;
+                time_over4seconds=0;
+            }
+            //if the elapsed_time is within +/- .2 seconds display blue indication. 3.8<=x<=4.2//
+            else if (elapsed_time >= stand_time - 0.2 && elapsed_time <= stand_time + 0.2) {
+                //after shown the blue color, then reset the button hover color to the oralginal//
+                    document.getElementsByClassName("button")[0].style.background = "blue";
+            }
+            //if the elapsed_time is within +/- .5 seconds display yellow indication. 3.5<=x<=4.5//
+            else if (elapsed_time >= stand_time - 0.5 && elapsed_time <= stand_time + 0.5) {
+                document.getElementsByClassName("button")[0].style.background = "yellow";
+            }
+            //if the elapsed_time is = stand_time =4, the buttoon background color change to green //
+            else if (elapsed_time == stand_time) {
+                document.getElementsByClassName("button")[0].style.background = "green";
+            }
+            //if the elapsed_time is greater than 4.5, the buttoon background color change to red x>4.5 //
+            else if (elapsed_time > stand_time + 0.5) {
+                document.getElementsByClassName("button")[0].style.background = "red";
+            }
+        }
+        else {
+            isrunning = true;
+            start_time = new Date();
+        }
+    }
+
+    
+    //insert more result with rows to the bottoms when user click the stop button//
+    function addRow() {
+        var table = document.getElementById("table");
+        var row = table.insertRow(1);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        cell1.innerHTML = time_try;
+        cell2.innerHTML = elapsed_time.toFixed(3);//only show 3 decimal//
+        cell3.innerHTML = time_over4seconds.toFixed(3);
+        cell4.innerHTML = time_less4seconds.toFixed(3);
+        //add the data to the series//
+        // elapsed_time_array.push(cell2.innerHTML);
+        // elapsed_time_array.shift();
+
+    }
+    // //add the data to the series//
+    var chart = Highcharts.chart('container', {
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'Elapsed Time'
+        },
+        subtitle: {
+            text: 'Source: the website'
+        },
+        xAxis: {
+            title: {
+                text: 'Time Try'
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Elapsed Time'
+            },
+            min: 0
+        },
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: true
+                },
+                enableMouseTracking: false
+            }
+        },
+        series: [{
+            name: 'elapsed_time_line',
+            //put the elapsed_time_array to the line//
+            data: elapsed_time_array
+        }],
+
+        
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 500
+                },
+                chartOptions: {
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'bottom'
+                    }
+                }
+            }]
+        }
+
+    });
+    
+    // // add a function to covert the time_try, andelapsed_time to the series data//
+    function addData() {
+        var elapsed_time_array =chart.series[0].options.data;//get the data from the series//
+        var newpoint = [time_try, elapsed_time]//create a new point//
+        elapsed_time_array.push(newpoint);//push the new point to the array//
+        chart.series[0].setData(elapsed_time_array);//set the data to the series//
+        // elapsed_time_array.push(elapsed_time);
+    }    
+
+    // When user click the button, the result container will show up//
+    $(document).ready(function () {//when the page is ready, the result container will hide//
+        $(".button").click(function () {//when click the button, the result container will show up//
+            $("#result").show();
+        });
+    });
+    
+
+</script>
+</body>
+</html>
