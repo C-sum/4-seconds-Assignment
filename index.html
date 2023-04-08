@@ -17,7 +17,6 @@
             transform: translate(-50%, -50%);
 
         }
-
         .highcharts-data-table table {
             font-family: Verdana, sans-serif;
             border-collapse: collapse;
@@ -191,6 +190,7 @@
 <script src="../../code/modules/exporting.js"></script>
 <script src="../../code/modules/export-data.js"></script>
 <script src="../../code/modules/accessibility.js"></script>
+<!-- HighChart libery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/10.3.3/highcharts.js" integrity="sha512-8cJ3Lf1cN3ld0jUEZy26UOg+A5YGLguP6Xi6bKLyYurrxht+xkLJ9oH9rc7pvNiYsmYuTvpe3wwS6LriK/oWDg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <figure class="highcharts-figure">
@@ -267,7 +267,7 @@
     var start_time,end_time,elapsed_time;
     var isrunning = false;
     //gloable the stand time//
-    var stand_time=4;
+    var stand_time=4.000;
     //hold the result table data//
     var time_try = 0;
     var time = 0;
@@ -299,15 +299,16 @@
         if (x.innerHTML === "start") {
             addRow();
             addData()
-            console.log(elapsed_time_array);
+            console.log(elapsed_time_array);            
         }
     }
 
+    
 
 // When user click the button, the timer will start, then click button again the timer will stop, to get the time when you stop the timer//
     function startTimer() {
         if (isrunning) {
-            isrunning = false;
+            isrunning = false;//stop the timer//
             end_time = new Date();
             elapsed_time = end_time - start_time;
             elapsed_time = elapsed_time / 1000;            
@@ -326,28 +327,44 @@
                 time_over4seconds=0;
             }
             //if the elapsed_time is within +/- .2 seconds display blue indication. 3.8<=x<=4.2//
-            else if (elapsed_time >= stand_time - 0.2 && elapsed_time <= stand_time + 0.2) {
+            else if (elapsed_time >= stand_time - 0.200 && elapsed_time <= stand_time + 0.200) {
                 //after shown the blue color, then reset the button hover color to the oralginal//
                     document.getElementsByClassName("button")[0].style.background = "blue";
             }
             //if the elapsed_time is within +/- .5 seconds display yellow indication. 3.5<=x<=4.5//
-            else if (elapsed_time >= stand_time - 0.5 && elapsed_time <= stand_time + 0.5) {
+            else if (elapsed_time >= stand_time - 0.500 && elapsed_time <= stand_time + 0.500) {
                 document.getElementsByClassName("button")[0].style.background = "yellow";
+                //change the text color to black//
+                document.getElementsByClassName("button")[0].style.color = "black";
+                //change the filter to the yellow color//
+                document.getElementsByClassName("button")[0].style.filter = "drop-shadow(0px 0px 0.75rem yellow)";
+
             }
             //if the elapsed_time is = stand_time =4, the buttoon background color change to green //
             else if (elapsed_time == stand_time) {
                 document.getElementsByClassName("button")[0].style.background = "green";
+                //change the filter to the green color//
+                document.getElementsByClassName("button")[0].style.filter = "drop-shadow(0px 0px 0.75rem green)";
             }
             //if the elapsed_time is greater than 4.5, the buttoon background color change to red x>4.5 //
-            else if (elapsed_time > stand_time + 0.5) {
+            else if (elapsed_time > stand_time + 0.500) {
                 document.getElementsByClassName("button")[0].style.background = "red";
+                //change the filter to the red color//
+                document.getElementsByClassName("button")[0].style.filter = "drop-shadow(0px 0px 0.75rem red)";                
             }
         }
+        
         else {
             isrunning = true;
             start_time = new Date();
+            //change the button color to the original color//
+            document.getElementsByClassName("button")[0].style.background = "linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 0%, rgba(0,212,255,1) 100%)";
+            document.getElementsByClassName("button")[0].style.color = "white";
+            document.getElementsByClassName("button")[0].style.filter = "drop-shadow(0px 0px 0.75rem  #1ea2f4)";
         }
     }
+
+    
 
     
     //insert more result with rows to the bottoms when user click the stop button//
@@ -376,7 +393,7 @@
             text: 'Elapsed Time'
         },
         subtitle: {
-            text: 'Source: the website'
+            text: 'In seconds'
         },
         xAxis: {
             title: {
