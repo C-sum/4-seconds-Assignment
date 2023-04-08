@@ -53,7 +53,7 @@
             background: #f1f7ff;
         }
 
-/* separate this is used for the button CSS  */
+/* separate, this is used for the button CSS  */
         * {
             padding:0;
             margin:0;
@@ -152,7 +152,7 @@
     <!-- create another container to store the result, inclued, how many second over 4 second and less, and actual time  -->
     <div class="container-fluid" id="result">
         <div class="result" style="position: absolute;">
-            <table class="table table-striped" id="table">
+            <table class="table table-striped" id="table">//need to create a table to store values//
                 <thead>
                     <tr>
                         <th scope="col">Times you try</th>
@@ -262,7 +262,7 @@
     // });
 
 
-    // button functions//
+    // variables//
     var delta;
     var start_time,end_time,elapsed_time;
     var isrunning = false;
@@ -278,12 +278,12 @@
     var elapsed_time_array = [];
     
 
-// User clicks button and the button text says Stop//
+//when clicks button and the button text says Stop//
     function button() {
         var x = document.getElementsByClassName("button")[0];
         if (x.innerHTML === "start") {
             x.innerHTML = "start";
-            x.style.fontSize = "40px";
+            x.style.fontSize = "40px";//change the font size
         }
         if (x.innerHTML === "stop") {
             x.innerHTML = "start";
@@ -299,19 +299,19 @@
         if (x.innerHTML === "start") {
             addRow();
             addData()
-            console.log(elapsed_time_array);            
+            console.log(elapsed_time_array);//check the array in console//            
         }
     }
 
     
 
-// When user click the button, the timer will start, then click button again the timer will stop, to get the time when you stop the timer//
+// When click the button, the timer will start//
     function startTimer() {
         if (isrunning) {
             isrunning = false;//stop the timer//
             end_time = new Date();
             elapsed_time = end_time - start_time;
-            elapsed_time = elapsed_time / 1000;            
+            elapsed_time = elapsed_time / 1000;//transform to seconds//           
             time_try++;            
             if (elapsed_time > stand_time) {
                 time_over4seconds=elapsed_time-stand_time;
@@ -367,7 +367,7 @@
     
 
     
-    //insert more result with rows to the bottoms when user click the stop button//
+    //insert more result with rows//
     function addRow() {
         var table = document.getElementById("table");
         var row = table.insertRow(1);
@@ -384,7 +384,7 @@
         // elapsed_time_array.shift();
 
     }
-    // //add the data to the series//
+    // //add the data to the series in chart//
     var chart = Highcharts.chart('container', {
         chart: {
             type: 'line'
