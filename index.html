@@ -15,8 +15,8 @@
             top: 90%;
             left: 70%;
             transform: translate(-50%, -50%);
-
         }
+
         .highcharts-data-table table {
             font-family: Verdana, sans-serif;
             border-collapse: collapse;
@@ -53,7 +53,7 @@
             background: #f1f7ff;
         }
 
-/* separate, this is used for the button CSS  */
+/* separate this is used for the button CSS  */
         * {
             padding:0;
             margin:0;
@@ -142,7 +142,7 @@
     </style>
 </head>
 <body>
-    <!-- Large button saying Start -->
+    <!-- Large button container -->
     <div class="container">
         <div class="Startbutton" style="position: relative;">
             <button id="buttoncolor"class="button" style="vertical-align:middle" onclick="button()"><span>Start </span></button>
@@ -152,7 +152,7 @@
     <!-- create another container to store the result, inclued, how many second over 4 second and less, and actual time  -->
     <div class="container-fluid" id="result">
         <div class="result" style="position: absolute;">
-            <table class="table table-striped" id="table">//need to create a table to store values//
+            <table class="table table-striped" id="table">
                 <thead>
                     <tr>
                         <th scope="col">Times you try</th>
@@ -172,10 +172,30 @@
             </table>
         </div>
     </div>
+    <!-- Finally result container -->
+    <div class="container1" id="FinallyResult">
+            <table class="table table-striped" id="table2">
+                <thead>
+                    <h3>This is your final result!</h3>
+                    <tr>
+                        <th scope="col">Total Attempts</th>
+                        <th scope="col">Max</th>
+                        <th scope="col">Min</th>
+                        <th scope="col">Avg</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="total attempts">0</td>
+                        <th id="max">0</th>
+                        <td id="min">0</td>
+                        <td id="avg">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-
-
-
+    </div>
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <!-- Boostrap links and JC, CSS --> 
@@ -196,7 +216,7 @@
 <figure class="highcharts-figure">
     <div id="container"></div>
 </figure>
-<!-- chart part -->
+
 <script type="text/javascript">
     // Highcharts.chart('container', {
 
@@ -262,28 +282,30 @@
     // });
 
 
-    // variables//
+    // button functions//
     var delta;
     var start_time,end_time,elapsed_time;
     var isrunning = false;
     //gloable the stand time//
-    var stand_time=4.000;
+    const stand_time=4;
     //hold the result table data//
     var time_try = 0;
     var time = 0;
     var time_over4seconds = 0;
     var time_less4seconds = 0;
-    //store the time_try and elapsed_time to the array//
+    //store the time_try and elapsed_time to the array(points)//
     var time_try_array = [];
     var elapsed_time_array = [];
+    //new store elapsed_time_array to the new array//
+    var New_elapsed_time_array = [];
     
 
-//when clicks button and the button text says Stop//
+// User clicks button and the button text says Stop//
     function button() {
         var x = document.getElementsByClassName("button")[0];
         if (x.innerHTML === "start") {
             x.innerHTML = "start";
-            x.style.fontSize = "40px";//change the font size
+            x.style.fontSize = "40px";
         }
         if (x.innerHTML === "stop") {
             x.innerHTML = "start";
@@ -298,21 +320,21 @@
         //when click start button, add rows//
         if (x.innerHTML === "start") {
             addRow();
-            addData()
-            console.log(elapsed_time_array);//check the array in console//            
+            addData();
+            newarry();
+            addresult();
         }
     }
 
-    
 
-// When click the button, the timer will start//
+// When user click the button, the timer will start, then click button again the timer will stop, to get the time when you stop the timer//
     function startTimer() {
         if (isrunning) {
             isrunning = false;//stop the timer//
             end_time = new Date();
             elapsed_time = end_time - start_time;
-            elapsed_time = elapsed_time / 1000;//transform to seconds//           
-            time_try++;            
+            elapsed_time = elapsed_time / 1000;            
+            time_try++;//count the time you try to click the button//            
             if (elapsed_time > stand_time) {
                 time_over4seconds=elapsed_time-stand_time;
                 //if the time_over4seconds is appear, the time_less4seconds will change to 0//
@@ -321,33 +343,46 @@
             if (elapsed_time == stand_time) {
                 time_over4seconds=0;
                 time_less4seconds=0;
+                document.getElementsByClassName("button")[0].style.background = "green";
+                //change the filter to the green color//
+                document.getElementsByClassName("button")[0].style.filter = "drop-shadow(0px 0px 0.75rem green)";
             }
             if (elapsed_time < stand_time) {
                 time_less4seconds=stand_time-elapsed_time;
                 time_over4seconds=0;
+                //The button's color change under the stand_time//
+                if (elapsed_time <= stand_time && elapsed_time >=stand_time-0.2){
+                document.getElementsByClassName("button")[0].style.background = "blue";
+                }
+                if (time_over4seconds > 0.2 &&  time_over4seconds <=0.5 || time_less4seconds <= 0.500 && time_less4seconds > 0.2) {
+                document.getElementsByClassName("button")[0].style.background = "yellow";
+                document.getElementsByClassName("button")[0].style.color = "black";
+                //change the filter to the yellow color//
+                document.getElementsByClassName("button")[0].style.filter = "drop-shadow(0px 0px 0.75rem yellow)";
+                }
+
             }
-            //if the elapsed_time is within +/- .2 seconds display blue indication. 3.8<=x<=4.2//
-            else if (elapsed_time >= stand_time - 0.200 && elapsed_time <= stand_time + 0.200) {
-                //after shown the blue color, then reset the button hover color to the oralginal//
-                    document.getElementsByClassName("button")[0].style.background = "blue";
+            // //if the elapsed_time is within +/- .2 seconds display blue indication. 0.0-0.2 (0,0.1,0.2)//
+            else if ( elapsed_time <= stand_time+0.2 && elapsed_time > stand_time ||elapsed_time >= 0.2 && elapsed_time < stand_time) {
+                document.getElementsByClassName("button")[0].style.background = "blue";
+
             }
-            //if the elapsed_time is within +/- .5 seconds display yellow indication. 3.5<=x<=4.5//
-            else if (elapsed_time >= stand_time - 0.500 && elapsed_time <= stand_time + 0.500) {
+            //if the elapsed_time is within +/- .5 seconds display yellow indication. 0.2-0.5 (0.3,0.4,0.5) //
+            else if (time_over4seconds > 0.2   &&  time_over4seconds <=0.5 || time_less4seconds <= 0.500 && time_less4seconds > 0.2) {
                 document.getElementsByClassName("button")[0].style.background = "yellow";
                 //change the text color to black//
                 document.getElementsByClassName("button")[0].style.color = "black";
                 //change the filter to the yellow color//
                 document.getElementsByClassName("button")[0].style.filter = "drop-shadow(0px 0px 0.75rem yellow)";
-
             }
             //if the elapsed_time is = stand_time =4, the buttoon background color change to green //
-            else if (elapsed_time == stand_time) {
+            else if (time_over4seconds == 0 && time_less4seconds == 0 || elapsed_time == stand_time) {
                 document.getElementsByClassName("button")[0].style.background = "green";
                 //change the filter to the green color//
                 document.getElementsByClassName("button")[0].style.filter = "drop-shadow(0px 0px 0.75rem green)";
             }
             //if the elapsed_time is greater than 4.5, the buttoon background color change to red x>4.5 //
-            else if (elapsed_time > stand_time + 0.500) {
+            else if (elapsed_time > 4.5) {
                 document.getElementsByClassName("button")[0].style.background = "red";
                 //change the filter to the red color//
                 document.getElementsByClassName("button")[0].style.filter = "drop-shadow(0px 0px 0.75rem red)";                
@@ -362,12 +397,42 @@
             document.getElementsByClassName("button")[0].style.color = "white";
             document.getElementsByClassName("button")[0].style.filter = "drop-shadow(0px 0px 0.75rem  #1ea2f4)";
         }
+
+    }
+    // put the elapsed_time to the new array//
+    function newarry() {
+       New_elapsed_time_array.push(elapsed_time);
+    //    New_elapsed_time_array.sort(function (a, b) { return a - b });//sort the array//
+       console.log(New_elapsed_time_array);
     }
 
-    
+    //get the max, min, avg, total of the attampts=try//
+    function addresult() {
+        let MaxElement = Math.max(...New_elapsed_time_array);
+        let MinElement = Math.min(...New_elapsed_time_array);
+        let AvgElement = New_elapsed_time_array.reduce((a, b) => a + b, 0) / New_elapsed_time_array.length;
+        let TotalAttempt = New_elapsed_time_array.length;
+        //put the max, min, avg, total to the table2//
+        let table = document.getElementById("table2");
+        let row4 = table.rows[1];
+        let cell4 = row4.cells[0];
+        cell4.innerHTML = TotalAttempt;
 
-    
-    //insert more result with rows//
+        let row = table.rows[1];
+        let cell = row.cells[1];
+        cell.innerHTML = MaxElement;
+
+        let row2 = table.rows[1];
+        let cell2 = row2.cells[2];
+        cell2.innerHTML = MinElement;
+
+        let row3 = table.rows[1];
+        let cell3 = row3.cells[3];
+        cell3.innerHTML = AvgElement.toFixed(3);
+
+    }
+
+    //insert more result with rows to the bottoms when user click the stop button//
     function addRow() {
         var table = document.getElementById("table");
         var row = table.insertRow(1);
@@ -384,7 +449,15 @@
         // elapsed_time_array.shift();
 
     }
-    // //add the data to the series in chart//
+
+    // function addresultl() {
+    //     var table = document.getElementById("table2");
+    //     var cell1 = table.insertRow(0);
+    //     cell1.innerHTML = time_try;
+    // }
+
+
+    // //add the data to the series//
     var chart = Highcharts.chart('container', {
         chart: {
             type: 'line'
